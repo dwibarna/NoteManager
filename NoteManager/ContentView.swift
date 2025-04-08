@@ -22,17 +22,19 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(notes) { note in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(note.title ?? "Tanpa Judul")
-                            .font(.headline)
-                        Text(note.content ?? "")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        Text(note.dateCreated ?? Date(), style: .date)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                    NavigationLink(destination: EditNoteView(note: note)) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(note.title ?? "Tanpa Judul")
+                                .font(.headline)
+                            Text(note.content ?? "")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            Text(note.dateCreated ?? Date(), style: .date)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.vertical, 6)
                     }
-                    .padding(.vertical, 6)
                 }
             }
             .navigationTitle("Catatan")
