@@ -9,6 +9,8 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    @State private var showingAddNote = false
+    
     @Environment(\.managedObjectContext) var viewContext
 
     @FetchRequest(
@@ -34,10 +36,19 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Catatan")
+            
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingAddNote = true
+                    }) {
+                        Label("Tambah", systemImage: "plus")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddNote) {
+            AddNoteView()
         }
     }
-}
-
-#Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
