@@ -36,6 +36,7 @@ struct ContentView: View {
                         .padding(.vertical, 6)
                     }
                 }
+                .onDelete(perform: deleteNotes)
             }
             .navigationTitle("Catatan")
             
@@ -51,6 +52,19 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showingAddNote) {
             AddNoteView()
+        }
+    }
+    
+    private func deleteNotes(at offset: IndexSet) {
+        for index in offset {
+            let note = notes[index]
+            viewContext.delete(note)
+        }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            print("❌ Gagal menghapus catatan: \(error.localizedDescription)")
         }
     }
 }
