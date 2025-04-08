@@ -23,6 +23,22 @@ struct EditNoteView: View {
                 TextEditor(text: Binding(get: {note.content ?? ""}, set: {note.content = $0}))
                     .frame(height: 150)
             }
+            
+            Section {
+                Button(role: .destructive) {
+                    viewContext.delete(note)
+                    
+                    do {
+                        try viewContext.save()
+                        dismiss()
+                    } catch {
+                        print("❌ Gagal menghapus catatan: \(error.localizedDescription)")
+                    }
+                    
+                } label: {
+                    Label("Hapus Catatan", systemImage: "trash")
+                }
+            }
         }
         .navigationTitle("Edit Catatan")
         .toolbar {
