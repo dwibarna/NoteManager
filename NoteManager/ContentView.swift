@@ -10,6 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @State private var showingAddNote = false
+    @StateObject private var noteViewModel: NoteViewModel
     
     @Environment(\.managedObjectContext) var viewContext
 
@@ -18,6 +19,10 @@ struct ContentView: View {
     )
     var notes: FetchedResults<Note>
 
+    init(context: NSManagedObjectContext) {
+        _noteViewModel = StateObject(wrappedValue: NoteViewModel(context: context))
+    }
+    
     var body: some View {
         NavigationView {
             List {
@@ -36,7 +41,13 @@ struct ContentView: View {
                         .padding(.vertical, 6)
                     }
                 }
-                .onDelete(perform: deleteNotes)
+                .onDelete { indexSet in
+                    indexSet.forEach { offset in
+                        let note = notes[offset]
+                        noteViewModel.deleteNote(note)
+                    }
+                    
+                }
             }
             .navigationTitle("Catatan")
             
@@ -54,17 +65,9 @@ struct ContentView: View {
             AddNoteView()
         }
     }
-    
-    private func deleteNotes(at offset: IndexSet) {
-        for index in offset {
-            let note = notes[index]
-            viewContext.delete(note)
-        }
-        
-        do {
-            try viewContext.save()
-        } catch {
-            print("❌ Gagal menghapus catatan: \(error.localizedDescription)")
-        }
-    }
 }
+
+#Preview {
+    ContentView(context: PersistenceController.preview.container.viewContext)
+}
+

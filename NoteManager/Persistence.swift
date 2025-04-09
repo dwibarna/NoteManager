@@ -15,30 +15,31 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let controller = PersistenceController(inMemory: true)
         let viewContext = controller.container.viewContext
-
-        // Tambahkan dummy data
-        for i in 1...5 {
+        
+        // Tambahkan dummy Note
+        for i in 1...3 {
             let note = Note(context: viewContext)
-            note.title = "Contoh Catatan \(i)"
-            note.content = "Ini adalah isi catatan ke-\(i)"
+            note.title = "Contoh \(i)"
+            note.content = "Isi catatan \(i)"
             note.dateCreated = Date()
         }
-
+        
         do {
             try viewContext.save()
         } catch {
             let nsError = error as NSError
-            fatalError("❌ Gagal menyimpan preview context: \(nsError), \(nsError.userInfo)")
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
 
         return controller
     }()
 
+
     // MARK: - Persistent Container
     let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentContainer(name: "NoteManager") // Pastikan ini sama dengan nama .xcdatamodeld
+        container = NSPersistentContainer(name: "NoteManager")
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
